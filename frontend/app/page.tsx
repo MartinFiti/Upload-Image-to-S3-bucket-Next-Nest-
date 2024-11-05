@@ -1,42 +1,42 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import NewPatientForm from "../components/NewPatientForm";
-import PatientCard from "../components/Card";
-import { Patient } from "@/types/patients";
+import NewUserForm from "../components/NewUserForm";
+import UserCard from "../components/Card";
+import { User } from "@/types/user";
 import Loader from "@/components/Loader";
 import GenericModal from "@/components/GenericModal";
 import { toast } from "react-toastify";
 
-export default function PatientManagementLayout() {
-  const [patients, setPatients] = useState<Patient[]>([]);
+export default function UserManagementLayout() {
+  const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCardForDeletion, setSelectedCardForDeletion] =
-    useState<Patient | null>(null);
+    useState<User | null>(null);
 
   useEffect(() => {
-    fetch("/api/patients").then((res) => {
+    fetch("/api/users").then((res) => {
       if (res.ok) {
         res.json().then((data) => {
-          setPatients(data);
-          localStorage.setItem("patients", JSON.stringify(data));
+          setUsers(data);
+          localStorage.setItem("users", JSON.stringify(data));
         });
       }
       setIsLoading(false);
     });
   }, []);
 
-  const addPatient = (newPatient: Patient) => {
-    setPatients((prevPatients) => {
-      const updatedPatients = [...prevPatients, newPatient];
-      localStorage.setItem("patients", JSON.stringify(updatedPatients));
-      return updatedPatients;
+  const addUser = (newUser: User) => {
+    setUsers((prevUsers) => {
+      const updatedUsers = [...prevUsers, newUser];
+      localStorage.setItem("users", JSON.stringify(updatedUsers));
+      return updatedUsers;
     });
   };
 
-  const handleOpenModal = (patient: Patient) => {
-    setSelectedCardForDeletion(patient);
+  const handleOpenModal = (user: User) => {
+    setSelectedCardForDeletion(user);
     setIsModalVisible(true);
   };
 
@@ -45,27 +45,25 @@ export default function PatientManagementLayout() {
     setSelectedCardForDeletion(null);
   };
 
-  const removePatient = async (uuid: string) => {
+  const removeUser = async (uuid: string) => {
     try {
-      const res = await fetch(`/api/patients/${uuid}`, {
+      const res = await fetch(`/api/users/${uuid}`, {
         method: "DELETE",
       });
 
       if (res.ok) {
-        setPatients((prevPatients) => {
-          const updatedPatients = prevPatients.filter(
-            (patient) => patient.uuid !== uuid
-          );
-          localStorage.setItem("patients", JSON.stringify(updatedPatients));
-          return updatedPatients;
+        setUsers((prevUsers) => {
+          const updatedUsers = prevUsers.filter((user) => user.uuid !== uuid);
+          localStorage.setItem("users", JSON.stringify(updatedUsers));
+          return updatedUsers;
         });
-        toast.success("Patient deleted successfully");
+        toast.success("User deleted successfully");
       } else {
-        toast.error("Failed to delete patient");
+        toast.error("Failed to delete user");
       }
     } catch (error) {
-      console.error("Error deleting patient", error);
-      toast.error("Failed to delete patient");
+      console.error("Error deleting user", error);
+      toast.error("Failed to delete user");
     } finally {
       handleCloseModal();
     }
@@ -74,24 +72,24 @@ export default function PatientManagementLayout() {
   return (
     <div className="flex flex-col container mx-auto w-full h-full px-4 py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-white">Patient Management</h1>
-        <NewPatientForm onSubmit={addPatient} />
+        <h1 className="text-3xl font-bold text-white">User Management</h1>
+        <NewUserForm onSubmit={addUser} />
       </div>
-      {isLoading && <Loader text="Loading Patients" />}
+      {isLoading && <Loader text="Loading Users" />}
       {isModalVisible && selectedCardForDeletion && (
         <GenericModal
           title="Confirm Deletion"
           text={`Are you sure you want to delete "${selectedCardForDeletion.name}"?`}
-          handleConfirm={removePatient}
+          handleConfirm={removeUser}
           handleClose={handleCloseModal}
           selectedItem={selectedCardForDeletion}
         />
       )}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {patients.map((patient) => (
-          <PatientCard
-            key={patient.id}
-            patient={patient}
+        {users.map((user) => (
+          <UserCard
+            key={user.id}
+            user={user}
             handleOpenModal={handleOpenModal}
           />
         ))}

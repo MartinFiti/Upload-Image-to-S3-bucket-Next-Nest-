@@ -1,4 +1,4 @@
-import { Patient } from "@/types/patients";
+import { User } from "@/types/user";
 import React from "react";
 
 interface ModalProps {
@@ -6,7 +6,7 @@ interface ModalProps {
   text: string;
   handleConfirm: (id: string) => void;
   handleClose: () => void;
-  selectedItem: Patient;
+  selectedItem: User;
 }
 
 const Modal = ({

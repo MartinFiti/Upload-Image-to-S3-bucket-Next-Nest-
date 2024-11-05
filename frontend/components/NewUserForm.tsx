@@ -3,14 +3,14 @@
 import { useState, ChangeEvent, useEffect } from "react";
 import Image from "next/image";
 import { toast } from "react-toastify";
-import { Patient } from "@/types/patients";
+import { User } from "@/types/user";
 import { v4 as uuidv4 } from "uuid";
 
-interface NewPatientFormProps {
-  onSubmit: (newPatient: Patient) => void;
+interface NewUserFormProps {
+  onSubmit: (newUser: User) => void;
 }
 
-export default function NewPatientForm({ onSubmit }: NewPatientFormProps) {
+export default function NewUserForm({ onSubmit }: NewUserFormProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -119,7 +119,7 @@ export default function NewPatientForm({ onSubmit }: NewPatientFormProps) {
     try {
       if (isFormValid) {
         const photoUuid = uuidv4().replace(/[^a-zA-Z0-9]/g, "");
-        const patientRes = await fetch("/api/patients", {
+        const userRes = await fetch("/api/users", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -130,10 +130,10 @@ export default function NewPatientForm({ onSubmit }: NewPatientFormProps) {
           }),
         });
 
-        if (patientRes.ok) {
-          const patientData = await patientRes.json();
+        if (userRes.ok) {
+          const userData = await userRes.json();
           const res = await fetch(
-            `/api/dms/presigned-url/upload?key=profile/${formData.name}${photoUuid}.jpg&contentType=image/jpg`
+            `/api/fms/presigned-url/upload?key=profile/${formData.name}${photoUuid}.jpg&contentType=image/jpg`
           );
 
           if (res.ok) {
@@ -147,9 +147,9 @@ export default function NewPatientForm({ onSubmit }: NewPatientFormProps) {
             });
 
             if (uploadRes.ok) {
-              toast.success("Patient has been created successfully!");
+              toast.success("User has been created successfully!");
               onSubmit({
-                ...patientData,
+                ...userData,
                 documentPhoto: "profile/" + formData.name + photoUuid + ".jpg",
               });
               setIsModalOpen(false);
@@ -163,8 +163,8 @@ export default function NewPatientForm({ onSubmit }: NewPatientFormProps) {
         }
       }
     } catch (error) {
-      console.error("Error creating patient", error);
-      toast.error("Failed to create patient");
+      console.error("Error creating user", error);
+      toast.error("Failed to create user");
     } finally {
       setIsLoading(false);
     }
@@ -207,15 +207,15 @@ export default function NewPatientForm({ onSubmit }: NewPatientFormProps) {
         onClick={() => setIsModalOpen(true)}
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
-        New Patient
+        New User
       </button>
 
       {isModalOpen && (
-        <div className="flex fixed justify-center items-center inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+        <div className="flex fixed justify-center items-center inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
           <div className="flex relative mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div className="mt-3 text-center">
               <h3 className="text-lg leading-6 font-medium text-gray-900">
-                Add New Patient
+                Add New User
               </h3>
               <form onSubmit={handleSubmit} className="mt-2 text-left">
                 <div className="mb-4">

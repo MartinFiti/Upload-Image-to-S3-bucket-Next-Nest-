@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { S3 } from 'aws-sdk';
  
 @Injectable()
-export class DmsService {
+export class FmsService {
   constructor() { }
     async getPreSignedURL(key: string, contentType: string) {
         const region = process.env.AWS_BUCKET_REGION;

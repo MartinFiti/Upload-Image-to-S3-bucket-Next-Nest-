@@ -1,3 +1,3 @@
-import * as PatientEntity from "./patient.entity";
+import * as UserEntity from "./user.entity";
 
-export { PatientEntity as Entities };
+export { UserEntity as Entities };

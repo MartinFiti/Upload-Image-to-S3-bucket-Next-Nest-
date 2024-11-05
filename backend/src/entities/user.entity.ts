@@ -1,13 +1,13 @@
 import { Column, Entity, Generated, PrimaryGeneratedColumn } from 'typeorm';
 import { EntityWithTimestamps } from './shared/entity-with-timestamps';
 
-@Entity('patients')
-export class Patient extends EntityWithTimestamps {
+@Entity('users')
+export class User extends EntityWithTimestamps {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column('uuid', {
-    comment: 'Patient UUID.',
+    comment: 'User UUID.',
     nullable: false,
   })
   @Generated('uuid')

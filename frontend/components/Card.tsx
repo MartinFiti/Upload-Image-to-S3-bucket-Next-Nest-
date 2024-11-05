@@ -10,17 +10,14 @@ import {
   Home,
   Trash2,
 } from "lucide-react";
-import { Patient } from "@/types/patients";
+import { User } from "@/types/user";
 
-interface PatientCardProps {
-  patient: Patient;
-  handleOpenModal: (p: Patient) => void;
+interface UserCardProps {
+  user: User;
+  handleOpenModal: (p: User) => void;
 }
 
-export default function PatientCard({
-  patient,
-  handleOpenModal,
-}: PatientCardProps) {
+export default function UserCard({ user, handleOpenModal }: UserCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [documentPhoto, setDocumentPhoto] =
     useState<string>("/defaultUser.jpg");
@@ -28,7 +25,7 @@ export default function PatientCard({
   useEffect(() => {
     const fetchDocumentPhoto = async () => {
       const res = await fetch(
-        `/api/dms/presigned-url/view?key=${patient.documentPhoto}`
+        `/api/fms/presigned-url/view?key=${user.documentPhoto}`
       );
 
       const resJson = await res.text();
@@ -55,22 +52,22 @@ export default function PatientCard({
             <div className="flex items-center space-x-4">
               <Image
                 src={documentPhoto}
-                alt={`${patient.name}'s photo`}
+                alt={`${user.name}'s photo`}
                 width={60}
                 height={60}
                 className="rounded-full object-cover"
               />
               <h2 className="text-xl font-semibold text-gray-800">
-                {patient.name}
+                {user.name}
               </h2>
             </div>
           </div>
         </div>
       </button>
       <button
-        onClick={() => handleOpenModal(patient)}
+        onClick={() => handleOpenModal(user)}
         className="absolute right-4 top-[36px] text-red-500 hover:text-red-700 focus:outline-none transition-colors duration-200 z-20"
-        aria-label="Delete patient"
+        aria-label="Delete user"
       >
         <Trash2 className="w-6 h-6" />
       </button>
@@ -83,18 +80,16 @@ export default function PatientCard({
       >
         <div className="flex items-center space-x-2 text-gray-600">
           <Mail className="w-5 h-5" />
-          <span className="hover:underline cursor-pointer">
-            {patient.email}
-          </span>
+          <span className="hover:underline cursor-pointer">{user.email}</span>
         </div>
         <div className="flex items-center space-x-2 text-gray-600">
           <Home className="w-5 h-5" />
-          <span>{patient.address}</span>
+          <span>{user.address}</span>
         </div>
         <div className="flex items-center space-x-2 text-gray-600">
           <Phone className="w-5 h-5" />
           <span className="hover:underline cursor-pointer">
-            {patient.phoneNumberCountryCode} {patient.phoneNumber}
+            {user.phoneNumberCountryCode} {user.phoneNumber}
           </span>
         </div>
       </div>
